@@ -9914,7 +9914,7 @@ GameObject:
   - component: {fileID: 114805015867020832}
   - component: {fileID: 64756078798160948}
   m_Layer: 0
-  m_Name: FSSPlayer
+  m_Name: Type_A_0
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10015,14 +10015,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a120d4c76dd41b440a0435d675cabec7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
   fireRate: 0.5
-  tilt: 5
+  tilt: 3
   boundary:
-    xMax: 0
-    xMin: 0
-  shot: {fileID: 1295451905169362}
-  shotSpawn: []
+    xMax: 6
+    xMin: -6
+  shot: {fileID: 1599717020079604, guid: 659bfba6b77e1ec418895cc0cd5f0db2, type: 3}
+  shotSpawn:
+  - {fileID: 4158715790340956}
   shipType: 0
 --- !u!64 &64756078798160948
 MeshCollider:
@@ -10032,7 +10032,7 @@ MeshCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1601725025499096}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Convex: 1

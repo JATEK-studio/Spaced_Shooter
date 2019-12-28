@@ -18,14 +18,14 @@ public class PlayerController : MonoBehaviour
         TypeD
     }
 
+    [SerializeField]
+    private float fireRate, tilt;
 
-    public float fireRate, tilt;
-
-    private float speed, nextFire, deltaX;
+    private float speed, nextFire, deltaX, sensitive;
 
     private int shield;
 
-    private int battery;
+    public int battery;
 
     public PlayerBoundary boundary;
 
@@ -39,29 +39,26 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private Transform[] shotSpawn;
 
-    [SerializeField]
-    private SpaceShipType shipType;
+    public SpaceShipType shipType;
 
     private void Awake()
     {
         rb = this.GetComponent<Rigidbody>();
-
+        battery = 100;
         switch (shipType)
         {
             case SpaceShipType.TypeA:
                 Input.gyro.enabled = false;
                 speed = 3;
-                battery = 150;
                 break;
             case SpaceShipType.TypeB:
                 Input.gyro.enabled = true;
-                battery = 200;
+                speed = 3;
+                sensitive = 3;
                 break;
             case SpaceShipType.TypeC:
-                battery = 300;
                 break;
             case SpaceShipType.TypeD:
-                battery = 100;
                 break;
         }
     }
@@ -83,7 +80,7 @@ public class PlayerController : MonoBehaviour
                     GameObject projectileClone = Instantiate(shot, clone.position, clone.rotation) as GameObject;
                     Destroy(projectileClone, 2);
                 }
-                //battery--;
+                battery--;
             }
 
             //Movement
@@ -99,12 +96,62 @@ public class PlayerController : MonoBehaviour
             //Rotate
             rb.rotation = Quaternion.Euler(0f, 0f, rb.velocity.x * -tilt);
             #endregion
+
+
+            //Battery control        
+            #region
+            if (battery >= 80 && battery <= 100)
+            {
+                //battery = 5;
+                fireRate = 0.5f;
+            }
+            else if (battery >= 60)
+            {
+                //battery = 4;
+                fireRate = 0.6f;
+            }
+            else if (battery >= 30)
+            {
+                //battery = 3;
+                fireRate = 0.7f;
+            }
+            else if (battery >= 10)
+            {
+                //battery = 2;
+                fireRate = 0.8f;
+                speed = 2;
+            }
+            else if (battery > 0)
+            {
+                //battery = 1;
+                fireRate = 0.9f;
+                speed = 2;
+            }
+            else
+            {
+                //battery = 0;
+                speed = 1;
+            }
+            #endregion
         }
         else if (shipType == SpaceShipType.TypeB)
         {
+            //Control method
             #region
+            //Fire
+            if (Input.GetButton("Fire1") && Time.time > nextFire && battery > 0 && Time.timeScale != 0)
+            {
+                nextFire = Time.time + fireRate;
+                foreach (Transform clone in shotSpawn)
+                {
+                    GameObject projectileClone = Instantiate(shot, clone.position, clone.rotation) as GameObject;
+                    Destroy(projectileClone, 2);
+                }
+                //battery--;
+            }
+
             //Movement
-            movement = new Vector3(Input.acceleration.x, 0f, 0f);
+            movement = new Vector3(Input.acceleration.x * sensitive, 0f, 0f);
             rb.velocity = movement * speed;
             rb.position = new Vector3(
                 Mathf.Clamp(rb.position.x, boundary.xMin, boundary.xMax),
@@ -115,45 +162,43 @@ public class PlayerController : MonoBehaviour
             //Rotate
             rb.rotation = Quaternion.Euler(0f, 0f, rb.velocity.x * -tilt);
             #endregion
-        }
 
-        //Battery control
-        #region
-        if (battery >= 80 && battery <= 100)
-        {
-            battery = 5;
-            fireRate = 0.2f;
-            speed = 6;
+
+            //Battery control        
+            #region
+            if (battery >= 80 && battery <= 100)
+            {
+                //battery = 5;
+                fireRate = 0.3f;
+            }
+            else if (battery >= 60)
+            {
+                //battery = 4;
+                fireRate = 0.35f;
+            }
+            else if (battery >= 30)
+            {
+                //battery = 3;
+                fireRate = 0.4f;
+            }
+            else if (battery >= 10)
+            {
+                //battery = 2;
+                fireRate = 0.45f;
+                sensitive = 2;
+            }
+            else if (battery > 0)
+            {
+                //battery = 1;
+                fireRate = 0.5f;
+                sensitive = 2;
+            }
+            else
+            {
+                //battery = 0;
+                sensitive = 1;
+            }
+            #endregion
         }
-        else if (battery >= 60)
-        {
-            battery = 4;
-            fireRate = 0.3f;
-            speed = 5;
-        }
-        else if (battery >= 30)
-        {
-            battery = 3;
-            fireRate = 0.5f;
-            speed = 5;
-        }
-        else if (battery >= 10)
-        {
-            battery = 2;
-            fireRate = 0.7f;
-            speed = 4;
-        }
-        else if (battery > 0)
-        {
-            battery = 1;
-            fireRate = 0.9f;
-            speed = 3;
-        }
-        else
-        {
-            battery = 0;
-            speed = 0;
-        }
-        #endregion
     }
 }
