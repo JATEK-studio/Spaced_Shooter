@@ -1,11 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SelectShip : MonoBehaviour
 {
     [SerializeField]
     private GameObject DisplayShip, MainGame, selectShipGame;
+
+    [SerializeField]
+    private Text lockText;
+
+    [SerializeField]
+    private GameObject leftArrow, rightArrow;
 
     private bool selectShip;
 
@@ -13,13 +20,52 @@ public class SelectShip : MonoBehaviour
 
     private void Start()
     {
+        if(SaveSystem.LoadPlayer() == null)
+        {
+            SaveSystem.SavePlayer();
+        }
+        else
+        {
+            for(int i = 0; i < SaveSystem.LoadPlayer().TempSHIP_ID.Length; i++)
+            {
+                PlayerData.Instance.SHIP_ID[i] = SaveSystem.LoadPlayer().TempSHIP_ID[i];
+            }
+        }
         index = 0;
+    }
+
+    private void FixedUpdate()
+    {
+        //Text
+        if (!PlayerData.Instance.SHIP_ID[index])
+        {
+            lockText.text = "LOCKED";
+        }
+        else
+        {
+            lockText.text = "";
+        }
+
+        //UI arrow
+        if(index == 10)
+        {
+            rightArrow.SetActive(false);
+        }
+        else if(index == 0)
+        {
+            leftArrow.SetActive(false);
+        }
+        else
+        {
+            rightArrow.SetActive(true);
+            leftArrow.SetActive(true);
+        }
     }
 
     //Button
     public void RightArrow()
     {
-        if(index <= 10)
+        if (index < 10)
         {
             index++;
             Vector3 desiredPos = DisplayShip.transform.position + new Vector3(-30, 0, 0);
@@ -30,7 +76,7 @@ public class SelectShip : MonoBehaviour
 
     public void LeftArrow()
     {
-        if(index >= 0)
+        if(index > 0)
         {
             index--;
             Vector3 desiredPos = DisplayShip.transform.position + new Vector3(30, 0, 0);

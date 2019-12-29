@@ -23,7 +23,7 @@ public class Obstacle : MonoBehaviour
         //normal meteor collide with bullet
         else if (collision.gameObject.CompareTag("Bullet") && this.gameObject.name == "meteor(Clone)")
         {
-            PlayerData.Instance.setIndex_UnlockType_B_0();
+            PlayerData.Instance.setIndex_UnlockType_B_0(false);
             Debug.Log(PlayerData.Instance.getIndex_UnlockType_B_0());
             GameObject vfxClone = Instantiate(vfx_explosion, collision.transform.position, collision.transform.rotation) as GameObject;
             Destroy(collision.gameObject);

@@ -1,19 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class PlayerData : MonoBehaviour
+public class PlayerData
 {
-    static readonly PlayerData instance = new PlayerData();
-
     //unlocked
-    public bool[] SHIP_ID = {true, false, false, false };
+    public bool[] SHIP_ID = { true, false, false, false };
 
     //selected ship for main game
     public int selectedShip;
 
     //Condition player can unlock ship
     private int index_unlock_Type_B_0;
+
+    static readonly PlayerData instance = new PlayerData();
 
     public static PlayerData Instance
     {
@@ -23,18 +22,28 @@ public class PlayerData : MonoBehaviour
         }
     }
 
-    //get
-    public void setIndex_UnlockType_B_0()
+    //set
+    public void setIndex_UnlockType_B_0(bool unlocked)
     {
-        index_unlock_Type_B_0++;
-        if(instance.index_unlock_Type_B_0 >= 10)
+        if (!unlocked)
+        {
+            index_unlock_Type_B_0++;
+            if (instance.index_unlock_Type_B_0 >= 10)
+            {
+                SHIP_ID[1] = true;
+                index_unlock_Type_B_0 = 10;
+                SaveSystem.SavePlayer();
+            }
+        }
+        else
         {
             SHIP_ID[1] = true;
             index_unlock_Type_B_0 = 10;
         }
+
     }
 
-    //set
+    //get
     public int getIndex_UnlockType_B_0()
     {
         return instance.index_unlock_Type_B_0;
