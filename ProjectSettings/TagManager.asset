@@ -11,6 +11,8 @@ TagManager:
   - Background
   - Rewards
   - DebuffEffect
+  - Type_C_Button
+  - Missile
   layers:
   - Default
   - TransparentFX

@@ -4,13 +4,16 @@ using System.Collections.Generic;
 public class PlayerData
 {
     //unlocked
-    public bool[] SHIP_ID = { true, false, false, false };
+    public bool[] SHIP_ID = { true, false, false, false, false, false, false, false};
 
     //selected ship for main game
     public int selectedShip;
 
     //Condition player can unlock ship
-    private int index_unlock_Type_B_0;
+    private int index_unlock;
+
+    //record
+    private int destroyedMeteor, destroyedMeteorWater, destroyedEnemySpaceShip, destroyedBoss;
 
     static readonly PlayerData instance = new PlayerData();
 
@@ -23,29 +26,25 @@ public class PlayerData
     }
 
     //set
-    public void setIndex_UnlockType_B_0(bool unlocked)
+    public void setIndex_Unlock()
     {
-        if (!unlocked)
-        {
-            index_unlock_Type_B_0++;
-            if (instance.index_unlock_Type_B_0 >= 10)
-            {
-                SHIP_ID[1] = true;
-                index_unlock_Type_B_0 = 10;
-                SaveSystem.SavePlayer();
-            }
-        }
-        else
+        index_unlock++;
+        if (instance.index_unlock >= 10)
         {
             SHIP_ID[1] = true;
-            index_unlock_Type_B_0 = 10;
+            SaveSystem.SavePlayer();
         }
-
+        else if (instance.index_unlock >= 3)
+        {
+            SHIP_ID[3] = true;
+            SaveSystem.SavePlayer();
+        }
+        
     }
 
     //get
-    public int getIndex_UnlockType_B_0()
+    public int getIndex_Unlock()
     {
-        return instance.index_unlock_Type_B_0;
+        return instance.index_unlock;
     }
 }

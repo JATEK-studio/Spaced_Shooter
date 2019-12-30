@@ -143,4 +143,4 @@ MonoBehaviour:
   vfx_playerExplosion: {fileID: 1797091272076834, guid: f2228ec933c1523498879da5f0c5df8d,
     type: 3}
   debuff:
-  - {fileID: 7263603906708657824, guid: b391ce76a36bcea44bd21467bd4eb420, type: 3}
+  - {fileID: 8362415422303645639}

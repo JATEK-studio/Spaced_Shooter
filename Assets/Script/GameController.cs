@@ -17,11 +17,8 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private GameObject[] SpaceShip;
 
-    private PlayerController playerController;
-
     private void Awake()
-    {
-        playerController = FindObjectOfType<PlayerController>();
+    {        
         Instantiate(SpaceShip[PlayerData.Instance.selectedShip], Vector3.zero, Quaternion.identity);
     }
 
@@ -30,22 +27,6 @@ public class GameController : MonoBehaviour
     {
         spawnHazardWait = 1f;
         StartCoroutine(StartSpawnHazardWave());
-    }
-
-    private void Restart()
-    {
-        if (Input.GetMouseButton(1))
-        {
-            SceneManager.LoadScene(0);
-        }
-    }
-
-    private void LateUpdate()
-    {
-        if(playerController == null)
-        {
-            Restart();
-        }
     }
 
     private IEnumerator StartSpawnHazardWave()

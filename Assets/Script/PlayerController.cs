@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityStandardAssets.CrossPlatformInput;
+using UnityEngine.EventSystems;
 
 [System.Serializable]
 public class PlayerBoundary
@@ -41,10 +43,11 @@ public class PlayerController : MonoBehaviour
 
     public SpaceShipType shipType;
 
+    private Button FireButton;
+
     private void Awake()
     {
         rb = this.GetComponent<Rigidbody>();
-        battery = 100;
         switch (shipType)
         {
             case SpaceShipType.TypeA:
@@ -54,9 +57,14 @@ public class PlayerController : MonoBehaviour
             case SpaceShipType.TypeB:
                 Input.gyro.enabled = true;
                 speed = 3;
+                battery = 100;
                 sensitive = 3;
                 break;
             case SpaceShipType.TypeC:
+                Input.gyro.enabled = false;
+                FireButton = GameObject.FindGameObjectWithTag("Type_C_Button").GetComponent<Button>();
+                battery = 300;
+                speed = 5;
                 break;
             case SpaceShipType.TypeD:
                 break;
@@ -72,6 +80,35 @@ public class PlayerController : MonoBehaviour
             //Control method
             #region
             //Fire
+            if (Input.GetButton("Fire1") && Time.time > nextFire && Time.timeScale != 0)
+            {
+                nextFire = Time.time + fireRate;
+                foreach (Transform clone in shotSpawn)
+                {
+                    GameObject projectileClone = Instantiate(shot, clone.position, clone.rotation) as GameObject;
+                    Destroy(projectileClone, 2);
+                }
+            }
+
+            //Movement
+            float moveHorizontalAndroid = CrossPlatformInputManager.GetAxis("Horizontal");
+            movement = new Vector3(moveHorizontalAndroid, 0f, 0f);
+            rb.velocity = movement * speed;
+            rb.position = new Vector3(
+                   Mathf.Clamp(rb.position.x, boundary.xMin, boundary.xMax),
+                   0f,
+                   0f
+            );
+
+            //Rotate
+            rb.rotation = Quaternion.Euler(0f, 0f, rb.velocity.x * -tilt);
+            #endregion        
+        }
+        else if (shipType == SpaceShipType.TypeB)
+        {
+            //Control method
+            #region
+            //Fire
             if (Input.GetButton("Fire1") && Time.time > nextFire && battery > 0 && Time.timeScale != 0)
             {
                 nextFire = Time.time + fireRate;
@@ -82,6 +119,62 @@ public class PlayerController : MonoBehaviour
                 }
                 battery--;
             }
+
+            //Movement
+            movement = new Vector3(Input.acceleration.x * sensitive, 0f, 0f);
+            rb.velocity = movement * speed;
+            rb.position = new Vector3(
+                Mathf.Clamp(rb.position.x, boundary.xMin, boundary.xMax),
+                0f,
+                0f
+                );
+
+            //Rotate
+            rb.rotation = Quaternion.Euler(0f, 0f, rb.velocity.x * -tilt);
+            #endregion
+
+            //Battery control        
+            #region
+            if (battery >= 80 && battery <= 100)
+            {
+                //battery = 5;
+                fireRate = 0.3f;
+            }
+            else if (battery >= 60 && battery < 80)
+            {
+                //battery = 4;
+                fireRate = 0.35f;
+            }
+            else if (battery >= 30 && battery < 60)
+            {
+                //battery = 3;
+                fireRate = 0.4f;
+            }
+            else if (battery >= 10 && battery < 30)
+            {
+                //battery = 2;
+                fireRate = 0.45f;
+                sensitive = 2;
+            }
+            else if (battery > 0 && battery < 10)
+            {
+                //battery = 1;
+                fireRate = 0.5f;
+                sensitive = 2;
+            }
+            else
+            {
+                //battery = 0;
+                sensitive = 1;
+            }
+            #endregion
+        }
+        else if (shipType == SpaceShipType.TypeC)
+        {
+            //Control method
+            #region
+            //Fire
+            FireButton.onClick.AddListener(TypeCFiring);
 
             //Movement
             float moveHorizontalAndroid = CrossPlatformInputManager.GetAxis("Horizontal");
@@ -100,105 +193,51 @@ public class PlayerController : MonoBehaviour
 
             //Battery control        
             #region
-            if (battery >= 80 && battery <= 100)
+            if (battery >= 100 && battery <= 300)
             {
                 //battery = 5;
-                fireRate = 0.5f;
+                fireRate = 0.1f;
             }
-            else if (battery >= 60)
+            else if (battery >= 50 && battery < 100)
             {
                 //battery = 4;
-                fireRate = 0.6f;
+                fireRate = 0.3f;
             }
-            else if (battery >= 30)
+            else if (battery >= 30 && battery < 50)
             {
                 //battery = 3;
-                fireRate = 0.7f;
+                fireRate = 0.5f;
             }
-            else if (battery >= 10)
+            else if (battery >= 10 && battery < 30)
             {
                 //battery = 2;
-                fireRate = 0.8f;
-                speed = 2;
+                fireRate = 0.6f;
             }
-            else if (battery > 0)
+            else if (battery > 0 && battery < 10)
             {
                 //battery = 1;
-                fireRate = 0.9f;
-                speed = 2;
+                fireRate = 0.7f;
             }
             else
             {
                 //battery = 0;
-                speed = 1;
+                fireRate = 0.8f;
             }
             #endregion
         }
-        else if (shipType == SpaceShipType.TypeB)
+    }
+
+    private void TypeCFiring()
+    {
+        if (battery > 0 && Time.timeScale != 0 && Time.time > nextFire)
         {
-            //Control method
-            #region
-            //Fire
-            if (Input.GetButton("Fire1") && Time.time > nextFire && battery > 0 && Time.timeScale != 0)
+            nextFire = Time.time + fireRate;
+            foreach (Transform clone in shotSpawn)
             {
-                nextFire = Time.time + fireRate;
-                foreach (Transform clone in shotSpawn)
-                {
-                    GameObject projectileClone = Instantiate(shot, clone.position, clone.rotation) as GameObject;
-                    Destroy(projectileClone, 2);
-                }
-                //battery--;
+                GameObject projectileClone = Instantiate(shot, clone.position, clone.rotation) as GameObject;
+                Destroy(projectileClone, 2);
             }
-
-            //Movement
-            movement = new Vector3(Input.acceleration.x * sensitive, 0f, 0f);
-            rb.velocity = movement * speed;
-            rb.position = new Vector3(
-                Mathf.Clamp(rb.position.x, boundary.xMin, boundary.xMax),
-                0f,
-                0f
-                );
-
-            //Rotate
-            rb.rotation = Quaternion.Euler(0f, 0f, rb.velocity.x * -tilt);
-            #endregion
-
-
-            //Battery control        
-            #region
-            if (battery >= 80 && battery <= 100)
-            {
-                //battery = 5;
-                fireRate = 0.3f;
-            }
-            else if (battery >= 60)
-            {
-                //battery = 4;
-                fireRate = 0.35f;
-            }
-            else if (battery >= 30)
-            {
-                //battery = 3;
-                fireRate = 0.4f;
-            }
-            else if (battery >= 10)
-            {
-                //battery = 2;
-                fireRate = 0.45f;
-                sensitive = 2;
-            }
-            else if (battery > 0)
-            {
-                //battery = 1;
-                fireRate = 0.5f;
-                sensitive = 2;
-            }
-            else
-            {
-                //battery = 0;
-                sensitive = 1;
-            }
-            #endregion
+            battery--;
         }
     }
 }
