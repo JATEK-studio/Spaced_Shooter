@@ -4,27 +4,21 @@ using UnityEngine;
 
 public class TrackMissile : MonoBehaviour
 {
-    private bool tracking;
+    private bool tracking = false;
 
-    private Transform target;
+    private Obstacle target;
 
     [SerializeField]
     private GameObject vfx_explosion;
 
-    void Start()
-    {
-        tracking = false;
-    }
-
     // Update is called once per frame
-    void Update()
+    private void Update()
     {        
         if (tracking)
         {
             if(target != null)
             {
-                Vector3 targetYAxis = new Vector3(0, target.position.y, 0);
-                transform.rotation = Quaternion.Euler(targetYAxis);
+                transform.LookAt(target.transform);
                 this.transform.position = Vector3.Lerp(this.transform.position, target.transform.position, 0.5f);
             }            
         }
@@ -32,21 +26,46 @@ public class TrackMissile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.name == "meteor(Clone)" && !tracking)
+        if(other.CompareTag("Enemy"))
         {
-            tracking = true;
-            target = other.transform;
+            if(tracking == false)
+            {
+                target = other.gameObject.GetComponent<Obstacle>();
+                if (target.isGivenTracked == false)
+                {
+                    target.isGivenTracked = true;
+                    tracking = true;
+                }
+            }
+        }
+        else if (other.name == "Defender(Clone)")
+        {
+            if (tracking == false)
+            {
+                target = other.gameObject.GetComponent<Obstacle>();
+                if (target.isGivenTracked == false)
+                {
+                    target.isGivenTracked = true;
+                    tracking = true;
+                }
+            }
+        }
+        else if (other.name == "meteor(Clone)" || other.name == "meteor_water(Clone)")
+        {
+            if (tracking == false)
+            {
+                target = other.gameObject.GetComponent<Obstacle>();
+                if (target.isGivenTracked == false)
+                {
+                    target.isGivenTracked = true;
+                    tracking = true;
+                }
+            }
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerStay(Collider other)
     {
-        if (collision.gameObject.CompareTag("Missile"))
-        {
-            GameObject vfxClone = Instantiate(vfx_explosion, collision.transform.position, collision.transform.rotation) as GameObject;
-            Destroy(collision.gameObject);
-            Destroy(vfxClone, 7);
-            Destroy(this.gameObject);
-        }
+        tracking = true;
     }
 }

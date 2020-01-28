@@ -10,9 +10,13 @@ TagManager:
   - Fire
   - Background
   - Rewards
-  - DebuffEffect
   - Type_C_Button
   - Missile
+  - Shield
+  - EnemyBullet
+  - Enemy
+  - AdsButton
+  - AdsCoolingDown
   layers:
   - Default
   - TransparentFX

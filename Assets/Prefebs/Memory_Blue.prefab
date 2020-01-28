@@ -9,11 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5551781360895662659}
-  - component: {fileID: -986899721698046786}
   - component: {fileID: 5551781360896989795}
   - component: {fileID: 5551781360898087075}
   - component: {fileID: 3616922370565090883}
-  - component: {fileID: 6915934404959972128}
   - component: {fileID: 9141004495575283205}
   - component: {fileID: 8200438783649762751}
   m_Layer: 0
@@ -37,18 +35,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-986899721698046786
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5551781360895886947}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd2946bded51a424dacaa9e3e461ec49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!33 &5551781360896989795
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -107,26 +93,6 @@ Halo:
     serializedVersion: 2
     rgba: 4280226053
   m_Size: 0.35
---- !u!114 &6915934404959972128
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5551781360895886947}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 473998edebe7d3c449bb744884b309b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  collision:
-    explosion: {fileID: 1997403801886648, guid: b47b556ab838cea499095eb8b24da2e8,
-      type: 3}
-    playerExplosion: {fileID: 1797091272076834, guid: d58032b08d373ee4fb5eaf4a1ab33ab0,
-      type: 3}
-  mover:
-    speed: -10
-    tumble: 10
 --- !u!54 &9141004495575283205
 Rigidbody:
   m_ObjectHideFlags: 0

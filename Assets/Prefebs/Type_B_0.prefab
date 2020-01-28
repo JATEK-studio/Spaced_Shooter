@@ -143,10 +143,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fireRate: 0.3
   tilt: 3
+  missileCount: 0
+  battery: 0
+  batteryUI: 0
+  max_Battery: 100
   boundary:
     xMax: 6
     xMin: -6
   shot: {fileID: 1599717020079604, guid: 659bfba6b77e1ec418895cc0cd5f0db2, type: 3}
+  vfx_explosion: {fileID: 1997403801886648, guid: b47b556ab838cea499095eb8b24da2e8,
+    type: 3}
   shotSpawn:
   - {fileID: 1407644393932881957}
   - {fileID: 2954926685985524224}
@@ -317,7 +323,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1725986479481791364}
-  m_Mesh: {fileID: -1550514412580984892, guid: e867c9fa8c66c274898b8c09f9745cd2, type: 3}
+  m_Mesh: {fileID: 4300004, guid: e867c9fa8c66c274898b8c09f9745cd2, type: 3}
 --- !u!23 &3378690703253248241
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -14713,7 +14719,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3562704515413869736}
-  m_Mesh: {fileID: 4493585093827132993, guid: e867c9fa8c66c274898b8c09f9745cd2, type: 3}
+  m_Mesh: {fileID: 4300002, guid: e867c9fa8c66c274898b8c09f9745cd2, type: 3}
 --- !u!23 &9121322189134776451
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -19663,7 +19669,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5972479526413022900}
-  m_Mesh: {fileID: -5495902117074765545, guid: e867c9fa8c66c274898b8c09f9745cd2, type: 3}
+  m_Mesh: {fileID: 4300000, guid: e867c9fa8c66c274898b8c09f9745cd2, type: 3}
 --- !u!23 &1024280053075712521
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -19681,7 +19687,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 866885ecd8a8dd34ba304c3a6edb240e, type: 2}
+  - {fileID: 2100000, guid: c476c174d8c3fee4388a149f45d6d397, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

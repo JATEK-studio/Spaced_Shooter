@@ -12,11 +12,10 @@ GameObject:
   - component: {fileID: 8649049452276721632}
   - component: {fileID: 8649049452275623200}
   - component: {fileID: 521740974014714816}
-  - component: {fileID: 7707399144143410851}
   - component: {fileID: 5464876482895055750}
   - component: {fileID: 4954439790614032444}
   m_Layer: 0
-  m_Name: Memory
+  m_Name: Memory_Yellow
   m_TagString: Memory
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,7 +28,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8649049452273630176}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -7.7555, y: 1.731, z: 13.389582}
   m_LocalScale: {x: 20, y: 20, z: 20}
   m_Children: []
@@ -69,6 +68,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -93,27 +93,6 @@ Halo:
     serializedVersion: 2
     rgba: 4278525471
   m_Size: 0.35
---- !u!114 &7707399144143410851
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8649049452273630176}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 473998edebe7d3c449bb744884b309b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  collision:
-    scoreValue: 7.25
-    explosion: {fileID: 1997403801886648, guid: b47b556ab838cea499095eb8b24da2e8,
-      type: 3}
-    playerExplosion: {fileID: 1797091272076834, guid: d58032b08d373ee4fb5eaf4a1ab33ab0,
-      type: 3}
-  mover:
-    speed: -5
-    tumble: 10
 --- !u!54 &5464876482895055750
 Rigidbody:
   m_ObjectHideFlags: 0

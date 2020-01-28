@@ -6,9 +6,15 @@ public class Obstacle : MonoBehaviour
 {
     [SerializeField]
     private GameObject vfx_explosion, vfx_playerExplosion;
+    private SoundManager soundManager;
+    [HideInInspector]
+    public bool isGivenTracked;
 
-    [SerializeField]
-    private GameObject[] debuff;
+    private void Awake()
+    {
+        isGivenTracked = false;
+        soundManager = FindObjectOfType<SoundManager>();
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -19,63 +25,96 @@ public class Obstacle : MonoBehaviour
             Destroy(collision.gameObject);
             Destroy(vfxClone, 7);
             Destroy(this.gameObject);
+            soundManager.PlaySoundEffect(3);
+            soundManager.PlaySoundEffect(4);
         }
-        //normal meteor collide with bullet
+
+        //normal obstacle collide with bullet
         else if (collision.gameObject.CompareTag("Missile") && this.gameObject.name == "meteor(Clone)")
         {
-            PlayerData.Instance.setIndex_Unlock();
-            Debug.Log(PlayerData.Instance.getIndex_Unlock());
+            PlayerData.Instance.setDestoryedMeteor();
+            Debug.Log(PlayerData.Instance.getDestoryedMeteor());
             GameObject vfxClone = Instantiate(vfx_explosion, collision.transform.position, collision.transform.rotation) as GameObject;
             Destroy(collision.gameObject);
             Destroy(vfxClone, 7);
             Destroy(this.gameObject);
+            soundManager.PlaySoundEffect(4);
         }
+        else if (collision.gameObject.CompareTag("Missile") && this.gameObject.name == "Defender")
+        {
+            PlayerData.Instance.setDestoryedSatellite();
+            Debug.Log(PlayerData.Instance.getDestoryedEnemySpaceShip());
+            GameObject vfxClone = Instantiate(vfx_explosion, collision.transform.position, collision.transform.rotation) as GameObject;
+            Destroy(collision.gameObject.transform.parent);
+            Destroy(vfxClone, 7);
+            Destroy(this.gameObject);
+            soundManager.PlaySoundEffect(4);
+        }        
+
         //water meteor collide with bullet
         else if (collision.gameObject.CompareTag("Missile") && this.gameObject.name == "meteor_water(Clone)")
         {
+            PlayerData.Instance.setDestoryedWaterMeteor();
             GameObject vfxClone = Instantiate(vfx_explosion, collision.transform.position, collision.transform.rotation) as GameObject;
-            GameObject debuffClone = Instantiate(debuff[0], collision.transform.position, collision.transform.rotation);
             Destroy(collision.gameObject);
             Destroy(vfxClone, 7);
-            Destroy(debuffClone, 7);
             Destroy(this.gameObject);
+            soundManager.PlaySoundEffect(4);
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player") && this.gameObject.name == "Debuff_Water(Clone)")
-        {
-            other.gameObject.GetComponent<PlayerController>().battery--;
-            Destroy(this.gameObject);
-        }
-        else if(other.gameObject.CompareTag("Player") && this.gameObject.name == "Debuff_Fire(Clone)")
+        //collide with player
+        if (other.gameObject.CompareTag("Player"))
         {
             GameObject vfxClone = Instantiate(vfx_playerExplosion, other.transform.position, other.transform.rotation) as GameObject;
             Destroy(other.gameObject);
             Destroy(vfxClone, 7);
             Destroy(this.gameObject);
+            soundManager.PlaySoundEffect(3);
+            soundManager.PlaySoundEffect(4);
         }
 
-        //normal meteor collide with bullet
-        else if (other.gameObject.CompareTag("Bullet") && this.gameObject.name == "meteor(Clone)")
+        if (other.gameObject.CompareTag("Shield"))
         {
-            PlayerData.Instance.setIndex_Unlock();
-            Debug.Log(PlayerData.Instance.getIndex_Unlock());
+            GameObject vfxClone = Instantiate(vfx_playerExplosion, other.transform.position, other.transform.rotation) as GameObject;
+            Destroy(vfxClone, 7);
+            Destroy(this.gameObject);
+            soundManager.PlaySoundEffect(4);
+        }
+
+        //normal obstacle collide with bullet
+        if (other.gameObject.CompareTag("Bullet") && this.gameObject.name == "meteor(Clone)")
+        {
+            PlayerData.Instance.setDestoryedMeteor();
+            Debug.Log(PlayerData.Instance.getDestoryedMeteor());
             GameObject vfxClone = Instantiate(vfx_explosion, other.transform.position, other.transform.rotation) as GameObject;
             Destroy(other.gameObject);
             Destroy(vfxClone, 7);
             Destroy(this.gameObject);
+            soundManager.PlaySoundEffect(4);
         }
+
+        else if (other.gameObject.CompareTag("Bullet") && this.gameObject.name == "Defender")
+        {
+            PlayerData.Instance.setDestoryedSatellite();
+            GameObject vfxClone = Instantiate(vfx_explosion, other.transform.position, other.transform.rotation) as GameObject;
+            Destroy(this.transform.parent.gameObject);
+            Destroy(vfxClone, 7);
+            soundManager.PlaySoundEffect(4);
+        }
+
         //water meteor collide with bullet
         else if (other.gameObject.CompareTag("Bullet") && this.gameObject.name == "meteor_water(Clone)")
         {
+            PlayerData.Instance.setDestoryedWaterMeteor();
+            Debug.Log(PlayerData.Instance.getDestoryedWaterMeteor());
             GameObject vfxClone = Instantiate(vfx_explosion, other.transform.position, other.transform.rotation) as GameObject;
-            GameObject debuffClone = Instantiate(debuff[0], other.transform.position, other.transform.rotation);
             Destroy(other.gameObject);
             Destroy(vfxClone, 7);
-            Destroy(debuffClone, 7);
             Destroy(this.gameObject);
+            soundManager.PlaySoundEffect(4);
         }
     }
 }

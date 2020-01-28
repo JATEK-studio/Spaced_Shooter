@@ -4,16 +4,13 @@ using System.Collections.Generic;
 public class PlayerData
 {
     //unlocked
-    public bool[] SHIP_ID = { true, false, false, false, false, false, false, false};
+    public bool[] SHIP_ID = { true, false, false, false, false, false, false, false, false};
 
     //selected ship for main game
     public int selectedShip;
 
-    //Condition player can unlock ship
-    private int index_unlock;
-
     //record
-    private int destroyedMeteor, destroyedMeteorWater, destroyedEnemySpaceShip, destroyedBoss;
+    public int destoryedMeteor, destoryedMeteorWater, destoryedEnemySpaceShip, destoryedSatellite, destoryedBoss, WatchedAds;
 
     static readonly PlayerData instance = new PlayerData();
 
@@ -26,25 +23,97 @@ public class PlayerData
     }
 
     //set
-    public void setIndex_Unlock()
+    public void setDestoryedMeteor()
     {
-        index_unlock++;
-        if (instance.index_unlock >= 10)
+        instance.destoryedMeteor++;
+        if (instance.destoryedMeteor == 50)
         {
-            SHIP_ID[1] = true;
-            SaveSystem.SavePlayer();
+            instance.SHIP_ID[1] = true;
         }
-        else if (instance.index_unlock >= 3)
+        if (instance.destoryedMeteor == 100)
         {
-            SHIP_ID[3] = true;
-            SaveSystem.SavePlayer();
+            instance.SHIP_ID[3] = true;
         }
-        
+        /*
+        if(instance.destoryedMeteor == 150)
+        {
+            instance.SHIP_ID[7] = true;
+        }
+        */
+        SaveSystem.SavePlayer();
+    }
+
+    public void setDestoryedSatellite()
+    {
+        instance.destoryedSatellite++;
+    }
+
+    public void setDestoryedWaterMeteor()
+    {
+        instance.destoryedMeteorWater++;
+        if (instance.destoryedMeteorWater == 50)
+        {
+            instance.SHIP_ID[6] = true;
+        }
+        if(instance.destoryedMeteorWater == 150)
+        {
+            instance.SHIP_ID[7] = true;
+        }
+        SaveSystem.SavePlayer();
+    }
+
+    public void setDestoryedEnemySpaceShip()
+    {
+        instance.destoryedEnemySpaceShip++;
+    }
+
+    public void setDestoryedBoss()
+    {
+        instance.destoryedBoss++;
+    }
+
+    public void setWatchedAds()
+    {
+        instance.WatchedAds++;
+        if (instance.WatchedAds == 5)
+        {
+            instance.SHIP_ID[4] = true;
+        }
+        if (instance.WatchedAds == 15)
+        {
+            instance.SHIP_ID[5] = true;
+        }
+        SaveSystem.SavePlayer();
     }
 
     //get
-    public int getIndex_Unlock()
+    public int getDestoryedSatellite()
     {
-        return instance.index_unlock;
+        return instance.destoryedSatellite;
+    }
+
+    public int getDestoryedMeteor()
+    {
+        return instance.destoryedMeteor;
+    }
+
+    public int getDestoryedWaterMeteor()
+    {
+        return instance.destoryedMeteorWater;
+    }
+
+    public int getDestoryedEnemySpaceShip()
+    {
+        return instance.destoryedEnemySpaceShip;
+    }
+
+    public int getDestoryedBoss()
+    {
+        return instance.destoryedBoss;
+    }
+
+    public int getWatchedAdsTime()
+    {
+        return instance.WatchedAds;
     }
 }

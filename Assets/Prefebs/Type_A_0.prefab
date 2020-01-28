@@ -9966,7 +9966,7 @@ MeshRenderer:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 2100000, guid: af56f44ef71812e49ac058d1d094fdcc, type: 2}
+  - {fileID: 2100000, guid: 62368cdd3ef86b64799eeabfc9861f57, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10017,10 +10017,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fireRate: 0.5
   tilt: 3
+  missileCount: 0
+  battery: 0
+  batteryUI: 0
+  max_Battery: 0
   boundary:
     xMax: 6
     xMin: -6
   shot: {fileID: 1599717020079604, guid: 659bfba6b77e1ec418895cc0cd5f0db2, type: 3}
+  vfx_explosion: {fileID: 1997403801886648, guid: b47b556ab838cea499095eb8b24da2e8,
+    type: 3}
   shotSpawn:
   - {fileID: 4158715790340956}
   shipType: 0

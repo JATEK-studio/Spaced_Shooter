@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
+using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
-using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class PlayerBoundary
@@ -25,10 +25,14 @@ public class PlayerController : MonoBehaviour
 
     private float speed, nextFire, deltaX, sensitive;
 
-    private int shield;
+    [HideInInspector]
+    public int missileCount, battery, batteryUI;
 
-    public int battery;
+    [SerializeField]
+    private int max_Battery;
 
+    private bool reloading;
+     
     public PlayerBoundary boundary;
 
     private Rigidbody rb;
@@ -36,7 +40,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 movement;
 
     [SerializeField]
-    private GameObject shot;
+    private GameObject shot, vfx_explosion;
 
     [SerializeField]
     private Transform[] shotSpawn;
@@ -45,8 +49,11 @@ public class PlayerController : MonoBehaviour
 
     private Button FireButton;
 
+    private SoundManager soundManager;
+
     private void Awake()
     {
+        soundManager = FindObjectOfType<SoundManager>();
         rb = this.GetComponent<Rigidbody>();
         switch (shipType)
         {
@@ -56,17 +63,16 @@ public class PlayerController : MonoBehaviour
                 break;
             case SpaceShipType.TypeB:
                 Input.gyro.enabled = true;
-                speed = 3;
-                battery = 100;
-                sensitive = 3;
+                speed = 5;
+                battery = max_Battery;
+                sensitive = 5;
                 break;
             case SpaceShipType.TypeC:
                 Input.gyro.enabled = false;
+                reloading = false;
                 FireButton = GameObject.FindGameObjectWithTag("Type_C_Button").GetComponent<Button>();
-                battery = 300;
-                speed = 5;
-                break;
-            case SpaceShipType.TypeD:
+                missileCount = 10;
+                speed = 3;
                 break;
         }
     }
@@ -86,8 +92,9 @@ public class PlayerController : MonoBehaviour
                 foreach (Transform clone in shotSpawn)
                 {
                     GameObject projectileClone = Instantiate(shot, clone.position, clone.rotation) as GameObject;
-                    Destroy(projectileClone, 2);
+                    Destroy(projectileClone, 2);                    
                 }
+                soundManager.PlaySoundEffect(1);
             }
 
             //Movement
@@ -117,7 +124,8 @@ public class PlayerController : MonoBehaviour
                     GameObject projectileClone = Instantiate(shot, clone.position, clone.rotation) as GameObject;
                     Destroy(projectileClone, 2);
                 }
-                battery--;
+                soundManager.PlaySoundEffect(1);
+                if (battery > 1)battery--;
             }
 
             //Movement
@@ -135,37 +143,36 @@ public class PlayerController : MonoBehaviour
 
             //Battery control        
             #region
-            if (battery >= 80 && battery <= 100)
+            if (battery >= max_Battery*0.7 && battery <= max_Battery)
             {
-                //battery = 5;
-                fireRate = 0.3f;
+                fireRate = 0.1f;
+                batteryUI = 5;
             }
-            else if (battery >= 60 && battery < 80)
+            else if (battery >= max_Battery * 0.5 && battery < max_Battery * 0.7)
             {
-                //battery = 4;
-                fireRate = 0.35f;
+                fireRate = 0.2f;
+                batteryUI = 4;
             }
-            else if (battery >= 30 && battery < 60)
+            else if (battery >= max_Battery * 0.3 && battery < max_Battery * 0.5)
             {
-                //battery = 3;
                 fireRate = 0.4f;
+                batteryUI = 3;
             }
-            else if (battery >= 10 && battery < 30)
+            else if (battery >= max_Battery * 0.1 && battery < max_Battery * 0.3)
             {
-                //battery = 2;
-                fireRate = 0.45f;
-                sensitive = 2;
-            }
-            else if (battery > 0 && battery < 10)
-            {
-                //battery = 1;
                 fireRate = 0.5f;
                 sensitive = 2;
+                batteryUI = 2;
+            }
+            else if (battery > 0 && battery < max_Battery * 0.1)
+            {
+                fireRate = 0.6f;
+                sensitive = 1;
+                batteryUI = 1;
             }
             else
             {
-                //battery = 0;
-                sensitive = 1;
+                batteryUI = 0;
             }
             #endregion
         }
@@ -174,7 +181,12 @@ public class PlayerController : MonoBehaviour
             //Control method
             #region
             //Fire
-            FireButton.onClick.AddListener(TypeCFiring);
+            FireButton.onClick.AddListener(Type_C_Firing);
+            if (missileCount < 10 && !reloading)
+            {
+                StartCoroutine(Reloading(3));
+                missileCount++;
+            }
 
             //Movement
             float moveHorizontalAndroid = CrossPlatformInputManager.GetAxis("Horizontal");
@@ -188,56 +200,103 @@ public class PlayerController : MonoBehaviour
 
             //Rotate
             rb.rotation = Quaternion.Euler(0f, 0f, rb.velocity.x * -tilt);
-            #endregion
+            #endregion          
+        }
+        /*
+        else if (shipType == SpaceShipType.TypeD)
+        {
+            //Control method
 
-
-            //Battery control        
             #region
-            if (battery >= 100 && battery <= 300)
-            {
-                //battery = 5;
-                fireRate = 0.1f;
-            }
-            else if (battery >= 50 && battery < 100)
-            {
-                //battery = 4;
-                fireRate = 0.3f;
-            }
-            else if (battery >= 30 && battery < 50)
-            {
-                //battery = 3;
-                fireRate = 0.5f;
-            }
-            else if (battery >= 10 && battery < 30)
-            {
-                //battery = 2;
-                fireRate = 0.6f;
-            }
-            else if (battery > 0 && battery < 10)
-            {
-                //battery = 1;
-                fireRate = 0.7f;
+            int deployed = 0;
+
+            //Shield Regeneration
+            if (consumeableShield.current_health <= 0)
+            {                
+                consumeableShield.gameObject.SetActive(false);
+                if (!reloading)
+                {
+                    StartCoroutine(Reloading(5));
+                    consumeableShield.current_health++;
+                }
             }
             else
             {
-                //battery = 0;
-                fireRate = 0.8f;
+                consumeableShield.gameObject.SetActive(true);
             }
-            #endregion
+
+            //Deploy Floating gun
+            if(deployed != shotSpawn.Length && !consumeableShield.deploy)
+            {               
+                GameObject DeployFloatingGunClone = Instantiate(shot, shotSpawn[deployed].position, shotSpawn[deployed].rotation) as GameObject;
+                consumeableShield.deploy = false;
+                deployed++;
+                if(DeployFloatingGunClone == null)
+                {
+                    deployed--;
+                }
+            }
+
+            //Movement
+            movement = new Vector3(Input.acceleration.x * sensitive, 0f, 0f);
+            rb.velocity = movement * speed;
+            rb.position = new Vector3(
+                Mathf.Clamp(rb.position.x, boundary.xMin, boundary.xMax),
+                0f,
+                0f
+                );
+
+            //Rotate
+            rb.rotation = Quaternion.Euler(0f, 0f, rb.velocity.x * -tilt);
+            #endregion          
+        }
+        */
+    }
+
+    private void FixedUpdate()
+    {
+        if(this.gameObject == null)
+        {
+            soundManager.AddLowPassFilter();
         }
     }
 
-    private void TypeCFiring()
+    private void OnTriggerEnter(Collider other)
     {
-        if (battery > 0 && Time.timeScale != 0 && Time.time > nextFire)
+        if (other.gameObject.CompareTag("EnemyBullet") && !this.transform.GetChild(0).CompareTag("Shield"))
+        {
+            GameObject clone_vfx = Instantiate(vfx_explosion, this.transform.position, this.transform.rotation) as GameObject;
+            Destroy(this.gameObject);
+            Destroy(clone_vfx, 7);
+            Destroy(other.gameObject);
+            soundManager.PlaySoundEffect(3);
+        }
+    }
+
+    private void Type_C_Firing()
+    {
+        if (Time.timeScale != 0 && Time.time > nextFire && missileCount > 0)
         {
             nextFire = Time.time + fireRate;
+            soundManager.PlaySoundEffect(2);
             foreach (Transform clone in shotSpawn)
             {
                 GameObject projectileClone = Instantiate(shot, clone.position, clone.rotation) as GameObject;
                 Destroy(projectileClone, 2);
             }
-            battery--;
+            if (missileCount > 0) missileCount--;
+            else missileCount = 0;
         }
+    }
+
+    private IEnumerator Reloading(int reloadingTime)
+    {
+        reloading = true;
+        float endPause = Time.realtimeSinceStartup + reloadingTime;
+        while (Time.realtimeSinceStartup < endPause)
+        {          
+            yield return 0;
+        }
+        reloading = false;
     }
 }
