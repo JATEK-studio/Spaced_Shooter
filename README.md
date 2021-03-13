@@ -4,7 +4,7 @@ This project is a one-week game jam challenge
 
 ## Title
 
-Mobile Shooter
+Mobile Space Shooter
 
 ## Goal
 
